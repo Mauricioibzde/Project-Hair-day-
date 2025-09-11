@@ -52,4 +52,3 @@ console.log(when)
     }
 }
 
-console.log(form.value)
