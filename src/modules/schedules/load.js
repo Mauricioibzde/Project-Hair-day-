@@ -1,19 +1,30 @@
 import { scheduleFetchByDay } from "../../services/schedule-fetch-by-day.js"
+import { scheduleShow } from "./show.js"
+import { hoursLoad } from "../form/hours-load.js"
 
-import {hoursLoad} from "../form/hours-load.js"
-//seleciona o input de data.
+// Seleciona o input de data
 const selectDate = document.getElementById("date")
-export async function  schedulesDay () {
-    //obtem a data do input
+
+export async function schedulesDay() {
+  try {
     const date = selectDate.value
-   
+    if (!date) {
+      console.warn("Nenhuma data selecionada.")
+      return
+    }
 
-    //Bucar na API os agendamentos
+    // Buscar agendamentos
+    const daylySchedules = await scheduleFetchByDay({ date })
 
-    const dailySchedule  = await scheduleFetchByDay({date})
-    console.log(dailySchedule)
-   
+    // Exibe os agendamentos
+    scheduleShow({ daylySchedules })
 
-     //Renderiza as horas disponiveis
-    hoursLoad({date})
+    // Renderiza as horas disponíveis
+    hoursLoad({ date })
+  } catch (error) {
+    console.error("Erro ao carregar os agendamentos do dia:", error)
+  }
 }
+
+//  dispara automaticamente quando a data mudar
+selectDate.addEventListener("change", schedulesDay)
